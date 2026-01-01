@@ -3,10 +3,10 @@
   "version": "5.2.0",
   "description": "A Rspack Plugin for generating Asset Manifests",
   "license": "MIT",
-  "repository": "rspack-contrib/rspack-manifest-plugin",
+  "repository": "rstackjs/rspack-manifest-plugin",
   "author": "Dane Thurber <dane.thurber@gmail.com>",
-  "homepage": "https://github.com/rspack-contrib/rspack-manifest-plugin",
-  "bugs": "https://github.com/rspack-contrib/rspack-manifest-plugin/issues",
+  "homepage": "https://github.com/rstackjs/rspack-manifest-plugin",
+  "bugs": "https://github.com/rstackjs/rspack-manifest-plugin/issues",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json",
