@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node: ['18']
+        node: ['22']
 
     name: Node v${{ matrix.node }}
     steps:

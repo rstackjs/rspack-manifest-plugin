@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node: ['20', '18']
+        node: ['22']
 
     name: Node v${{ matrix.node }}
 
@@ -51,7 +51,7 @@ jobs:
         run: pnpm --recursive build
 
       - name: Lint Repo
-        run: pnpm lint:js
+        run: pnpm run lint
 
       - name: Run Tests
         run: pnpm ci:coverage
