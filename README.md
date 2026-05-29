@@ -24,28 +24,10 @@ Change list:
 - Add `RspackManifestPlugin` export
 - Replace `tapable` dependency with `@rspack/lite-tapable`
 
-## Requirements
-
-`rspack-manifest-plugin` is an [evergreen 🌲](./.github/FAQ.md#what-does-evergreen-mean) module.
-
-This module requires an [Active LTS](https://github.com/nodejs/Release) Node version (v12.0.0+) and Webpack v5.0.0.
-
-## Contributing
-
-This repository leverages [pnpm](https://pnpm.js.org/) for dependency management.
-
-To begin, please install `pnpm`:
-
-```console
-$ npm install pnpm -g
-```
-
 ## Install
 
-Using npm:
-
-```console
-npm install rspack-manifest-plugin --save-dev
+```bash
+npm install rspack-manifest-plugin -D
 ```
 
 ## Usage
@@ -53,20 +35,16 @@ npm install rspack-manifest-plugin --save-dev
 Create a `rspack.config.js` file:
 
 ```js
-const { RspackManifestPlugin } = require('rspack-manifest-plugin');
-const options = { ... };
+import { RspackManifestPlugin } from 'rspack-manifest-plugin';
 
-module.exports = {
-	// an example entry definition
-	entry: [ 'app.js'	],
-  ...
+export default {
   plugins: [
-    new RspackManifestPlugin(options)
+    new RspackManifestPlugin({
+      // options...
+    })
   ]
 };
 ```
-
-And run `Rspack`.
 
 With the default options, the example above will create a `manifest.json` file in the output directory for the build. The manifest file will contain a map of source filenames to the corresponding build output file. e.g.
 
@@ -240,7 +218,7 @@ Returns: `{ afterEmit: SyncWaterfallHook, beforeEmit: SyncWaterfallHook }`
 #### Usage
 
 ```js
-const { getCompilerHooks } = require('rspack-manifest-plugin');
+import { getCompilerHooks } from 'rspack-manifest-plugin';
 
 class BatmanPlugin {
   apply(compiler) {
@@ -252,10 +230,6 @@ class BatmanPlugin {
   }
 }
 ```
-
-## Notes
-
-- If using this plugin with `webpack-clean` and `webpack-dev-server`, please review [this issue](https://github.com/shellscape/webpack-manifest-plugin/issues/267).
 
 ## Attiribution
 
