@@ -35,12 +35,12 @@ jobs:
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: ${{ matrix.node }}
+          package-manager-cache: false
 
-      - name: install pnpm
-        run: npm install pnpm -g
-
-      - name: pnpm install
-        run: pnpm install --ignore-scripts
+      - name: Install Pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        with:
+          run_install: true
 
       - name: run tests
         run: pnpm test
