@@ -27,7 +27,7 @@ export interface InternalOptions {
   removeKeyHash: RegExp | false;
   seed: Record<any, any>;
   serialize: (manifest: Manifest) => string;
-  sort: (fileA: FileDescriptor, fileB: FileDescriptor) => Number;
+  sort: (fileA: FileDescriptor, fileB: FileDescriptor) => number;
   transformExtensions: RegExp;
   useEntryKeys: boolean;
   useLegacyEmit: boolean;
