@@ -150,7 +150,10 @@ const transformFiles = (files: FileDescriptor[], options: InternalOptions) =>
     .reduce(
       // Note: We want to access the filter, map, and sort functions on an array. TS sucks at this
       // so we cast to something it can't complain about
-      (prev, fname: string) => (prev as unknown as Record<string, Function>)[fname](options[fname]),
+      (prev, fname: string) =>
+        (prev as unknown as Record<string, (callback: unknown) => FileDescriptor[]>)[fname](
+          options[fname]
+        ),
       files
     )
     .map(standardizeFilePaths);

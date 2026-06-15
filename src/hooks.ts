@@ -28,7 +28,7 @@ interface EmitHookArgs {
 }
 
 interface EmitCompilation {
-  emitAsset: Function;
+  emitAsset: (name: string, source: unknown) => void;
 }
 
 const compilerHookMap = new WeakMap();
@@ -48,7 +48,7 @@ const getCompilerHooks = (compiler: Compiler) => {
 const beforeRunHook = (
   { emitCountMap, manifestFileName }: BeforeRunHookArgs,
   _: Compiler,
-  callback: Function
+  callback: () => void
 ) => {
   const emitCount = emitCountMap.get(manifestFileName) || 0;
   emitCountMap.set(manifestFileName, emitCount + 1);

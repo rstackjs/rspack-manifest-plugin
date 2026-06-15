@@ -41,7 +41,7 @@
     "@ava/babel": "^1.0.1",
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
-    "@rslint/core": "^0.5.1",
+    "@rslint/core": "^0.6.1",
     "@rspack/core": "^1.0.14",
     "@svgr/webpack": "^5.4.0",
     "@types/node": "^16.4.3",
