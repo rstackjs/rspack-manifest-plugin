@@ -13,7 +13,6 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
-      'no-undef': 'off',
     },
   },
 ]);
