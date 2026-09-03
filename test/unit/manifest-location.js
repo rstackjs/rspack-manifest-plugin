@@ -13,11 +13,11 @@ test('relative path', async (t) => {
   const config = {
     context: __dirname,
     entry: '../fixtures/file.js',
-    output: { path: join(outputPath, 'relative') }
+    output: { path: join(outputPath, 'relative') },
   };
 
   const { manifest } = await compile(config, t, {
-    fileName: 'webpack.manifest.json'
+    fileName: 'webpack.manifest.json',
   });
 
   t.deepEqual(manifest, { 'main.js': 'main.js' });
@@ -27,11 +27,11 @@ test('absolute path', async (t) => {
   const config = {
     context: __dirname,
     entry: '../fixtures/file.js',
-    output: { path: join(outputPath, 'absolute') }
+    output: { path: join(outputPath, 'absolute') },
   };
 
   const { manifest } = await compile(config, t, {
-    fileName: join(outputPath, 'absolute/webpack.manifest.json')
+    fileName: join(outputPath, 'absolute/webpack.manifest.json'),
   });
 
   t.deepEqual(manifest, { 'main.js': 'main.js' });

@@ -8,7 +8,7 @@ class MockCopyPlugin {
   apply(compiler) {
     const hookOptions = {
       name: 'MockCopyPlugin',
-      stage: webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS
+      stage: webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
     };
     const emit = (compilation, callback) => {
       const output = '// some compilation result\n';

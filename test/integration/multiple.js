@@ -21,13 +21,13 @@ test('should not produce mangle output', async (t) => {
     return {
       context: __dirname,
       entry: {
-        [`main-${i}`]: '../fixtures/file.js'
+        [`main-${i}`]: '../fixtures/file.js',
       },
       output: {
         filename: '[name].js',
-        path: outputPath
+        path: outputPath,
       },
-      plugins: [new WebpackManifestPlugin({ seed })]
+      plugins: [new WebpackManifestPlugin({ seed })],
     };
   });
 
@@ -50,25 +50,25 @@ test('should produce two seperate manifests', async (t) => {
     {
       context: __dirname,
       entry: {
-        main: '../fixtures/file.js'
+        main: '../fixtures/file.js',
       },
       output: {
         filename: '[name].js',
-        path: join(outputMultiPath, '1')
+        path: join(outputMultiPath, '1'),
       },
-      plugins: [new WebpackManifestPlugin()]
+      plugins: [new WebpackManifestPlugin()],
     },
     {
       context: __dirname,
       entry: {
-        main: '../fixtures/file.js'
+        main: '../fixtures/file.js',
       },
       output: {
         filename: '[name].js',
-        path: join(outputMultiPath, '2')
+        path: join(outputMultiPath, '2'),
       },
-      plugins: [new WebpackManifestPlugin()]
-    }
+      plugins: [new WebpackManifestPlugin()],
+    },
   ];
   await compile(config, {}, t);
 

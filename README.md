@@ -41,8 +41,8 @@ export default {
   plugins: [
     new RspackManifestPlugin({
       // options...
-    })
-  ]
+    }),
+  ],
 };
 ```
 

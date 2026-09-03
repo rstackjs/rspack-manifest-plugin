@@ -13,9 +13,9 @@ const applyDefaults = (webpackOpts, manifestOptions) => {
     optimization: { chunkIds: 'named' },
     output: {
       filename: '[name].js',
-      publicPath: ''
+      publicPath: '',
     },
-    plugins: [new WebpackManifestPlugin(manifestOptions)]
+    plugins: [new WebpackManifestPlugin(manifestOptions)],
   };
   return merge(defaults, webpackOpts);
 };
@@ -32,7 +32,9 @@ const prepare = (webpackOpts, manifestOptions) => {
 const flatten = (array) => (array.length > 1 ? array : array[0]);
 
 const compile = (config, t, manifestOptions = {}) => {
-  const configs = flatten([config].map((options) => prepare(options, manifestOptions)));
+  const configs = flatten(
+    [config].map((options) => prepare(options, manifestOptions)),
+  );
   const compiler = webpack(configs);
 
   return new Promise((p, f) => {
@@ -43,7 +45,10 @@ const compile = (config, t, manifestOptions = {}) => {
       }
 
       const outputPath = [].concat(configs)[0].output.path;
-      let manifestPath = join(outputPath, manifestOptions.fileName || 'manifest.json');
+      let manifestPath = join(
+        outputPath,
+        manifestOptions.fileName || 'manifest.json',
+      );
 
       if (isAbsolute(manifestOptions.fileName || '')) {
         manifestPath = manifestOptions.fileName;

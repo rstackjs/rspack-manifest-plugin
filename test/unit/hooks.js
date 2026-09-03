@@ -33,7 +33,7 @@ test('afterEmit, beforeEmit', async (t) => {
     context: __dirname,
     entry: '../fixtures/file.js',
     output: { path: outputPath },
-    plugins: [new HookPlugin()]
+    plugins: [new HookPlugin()],
   };
   const { manifest } = await compile(config, t);
 

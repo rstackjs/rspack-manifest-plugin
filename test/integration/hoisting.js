@@ -3,12 +3,20 @@ const { join } = require('path');
 const test = require('ava');
 
 const { WebpackManifestPlugin } = require('../../');
-const { compile, hashLiteral, readJson, writeFile } = require('../helpers/integration');
+const {
+  compile,
+  hashLiteral,
+  readJson,
+  writeFile,
+} = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/scoped-hoisting');
 
 test.before(() => {
-  writeFile(join(outputPath, 'index.js'), 'import { ReactComponent } from "./logo.svg";');
+  writeFile(
+    join(outputPath, 'index.js'),
+    'import { ReactComponent } from "./logo.svg";',
+  );
   writeFile(join(outputPath, 'logo.svg'), '<svg />');
 });
 
@@ -22,15 +30,15 @@ test('outputs a manifest', async (t) => {
       rules: [
         {
           test: /\.svg$/,
-          use: ['@svgr/webpack', 'file-loader']
-        }
-      ]
+          use: ['@svgr/webpack', 'file-loader'],
+        },
+      ],
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
-      path: outputPath
+      path: outputPath,
     },
-    plugins
+    plugins,
   };
   const stats = await compile(config, {}, t);
   const manifest = readJson(join(outputPath, 'manifest.json'));

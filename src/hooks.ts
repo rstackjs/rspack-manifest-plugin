@@ -1,17 +1,21 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { SyncWaterfallHook } from '@rspack/lite-tapable';
-import type { Compiler, Module, Compilation, LoaderContext } from '@rspack/core';
-import type { EmitCountMap, InternalOptions } from './';
+import type {
+  Compiler,
+  Module,
+  Compilation,
+  LoaderContext,
+} from '@rspack/core';
+import type { EmitCountMap, InternalOptions } from './index.ts';
 
 import {
-  CompilationAsset,
   generateManifest,
   reduceAssets,
   reduceChunk,
   transformFiles,
-  FileDescriptor
-} from './helpers';
+} from './helpers.ts';
+import type { CompilationAsset, FileDescriptor } from './helpers.ts';
 
 interface BeforeRunHookArgs {
   emitCountMap: EmitCountMap;
@@ -38,7 +42,7 @@ const getCompilerHooks = (compiler: Compiler) => {
   if (typeof hooks === 'undefined') {
     hooks = {
       afterEmit: new SyncWaterfallHook(['manifest']),
-      beforeEmit: new SyncWaterfallHook(['manifest'])
+      beforeEmit: new SyncWaterfallHook(['manifest']),
     };
     compilerHookMap.set(compiler, hooks);
   }
@@ -48,7 +52,7 @@ const getCompilerHooks = (compiler: Compiler) => {
 const beforeRunHook = (
   { emitCountMap, manifestFileName }: BeforeRunHookArgs,
   _: Compiler,
-  callback: () => void
+  callback: () => void,
 ) => {
   const emitCount = emitCountMap.get(manifestFileName) || 0;
   emitCountMap.set(manifestFileName, emitCount + 1);
@@ -66,9 +70,9 @@ const emitHook = function emit(
     manifestAssetId,
     manifestFileName,
     moduleAssets,
-    options
+    options,
   }: EmitHookArgs,
-  compilation: Compilation
+  compilation: Compilation,
 ) {
   const emitCount = emitCountMap.get(manifestFileName) - 1;
   // Disable everything we don't use, add asset info, show cached assets
@@ -78,7 +82,7 @@ const emitHook = function emit(
     cachedAssets: true,
     // Note: Webpack v5 compat
     ids: true,
-    publicPath: true
+    publicPath: true,
   });
 
   // Rspack supports `output.publicPath: 'auto'`, which resolves the publicPath
@@ -86,7 +90,8 @@ const emitHook = function emit(
   // string value 'auto' should not be serialized into the manifest. Treat it as
   // an "unset" publicPath so manifest values remain unprefixed and consumers can
   // resolve at runtime. See https://rspack.rs/guide/features/asset-base-path#automatic-publicpath
-  const resolvedPublicPath = options.publicPath !== null ? options.publicPath : stats.publicPath;
+  const resolvedPublicPath =
+    options.publicPath !== null ? options.publicPath : stats.publicPath;
   const publicPath = resolvedPublicPath === 'auto' ? '' : resolvedPublicPath;
   const { basePath, removeKeyHash } = options;
 
@@ -94,22 +99,24 @@ const emitHook = function emit(
 
   const auxiliaryFiles: Record<any, any> = {};
   let files = Array.from(compilation.chunks).reduce<FileDescriptor[]>(
-    (prev: FileDescriptor[], chunk: any) => reduceChunk(prev, chunk, options, auxiliaryFiles),
-    [] as FileDescriptor[]
+    (prev: FileDescriptor[], chunk: any) =>
+      reduceChunk(prev, chunk, options, auxiliaryFiles),
+    [] as FileDescriptor[],
   );
 
   // module assets don't show up in assetsByChunkName, we're getting them this way
   files = (stats.assets! as unknown as CompilationAsset[]).reduce(
     (prev, asset) => reduceAssets(prev, asset, moduleAssets),
-    files
+    files,
   );
 
   // don't add hot updates and don't add manifests from other instances
   files = files.filter(
     ({ name, path }: { name: string; path: string }) =>
       !path.includes('hot-update') &&
-      typeof emitCountMap.get(join(compiler.options.output?.path || '<unknown>', name)) ===
-        'undefined'
+      typeof emitCountMap.get(
+        join(compiler.options.output?.path || '<unknown>', name),
+      ) === 'undefined',
   );
 
   // auxiliary files are "extra" files that are probably already included
@@ -144,7 +151,7 @@ const emitHook = function emit(
       name: basePath ? normalizePath(basePath) + file.name : file.name,
       // Similar to basePath but only affects the value (e.g. how output.publicPath turns
       // require('foo/bar') into '/public/foo/bar', see https://github.com/webpack/docs/wiki/configuration#outputpublicpath
-      path: publicPath ? normalizePath(publicPath) + file.path : file.path
+      path: publicPath ? normalizePath(publicPath) + file.path : file.path,
     };
 
     if (integrityMap[file.path]) {
@@ -152,7 +159,9 @@ const emitHook = function emit(
     }
 
     // Fixes #210
-    changes.name = removeKeyHash ? changes.name.replace(removeKeyHash, '') : changes.name;
+    changes.name = removeKeyHash
+      ? changes.name.replace(removeKeyHash, '')
+      : changes.name;
 
     return Object.assign(file, changes);
   });
@@ -169,7 +178,7 @@ const emitHook = function emit(
 
     (compilation as unknown as EmitCompilation).emitAsset(
       manifestAssetId,
-      new compiler.webpack.sources.RawSource(output)
+      new compiler.webpack.sources.RawSource(output),
     );
 
     if (options.writeToFileEmit) {
@@ -188,14 +197,16 @@ interface LegacyModule extends Module {
 const normalModuleLoaderHook = (
   { moduleAssets }: { moduleAssets: Record<any, any> },
   context: unknown,
-  module: LegacyModule
+  module: LegacyModule,
 ) => {
   const loaderContext = context as LoaderContext<any>;
   const { emitFile } = loaderContext;
 
   loaderContext.emitFile = (file: string, content: string, sourceMap: any) => {
     if (module.userRequest && !moduleAssets[file]) {
-      Object.assign(moduleAssets, { [file]: join(dirname(file), basename(module.userRequest)) });
+      Object.assign(moduleAssets, {
+        [file]: join(dirname(file), basename(module.userRequest)),
+      });
     }
 
     return emitFile.call(module, file, content, sourceMap);

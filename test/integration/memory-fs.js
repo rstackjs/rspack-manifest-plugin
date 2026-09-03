@@ -18,9 +18,9 @@ test('outputs a manifest when using memory fs', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: outputPath
+      path: outputPath,
     },
-    plugins: [new WebpackManifestPlugin({ writeToFileEmit: true })]
+    plugins: [new WebpackManifestPlugin({ writeToFileEmit: true })],
   };
   await compile(config, { outputFileSystem: new MemoryFileSystem() }, t);
 

@@ -4,7 +4,12 @@ const test = require('ava');
 const webpack = require('webpack');
 
 const { WebpackManifestPlugin } = require('../../');
-const { hashLiteral, readJson, watch, writeFile } = require('../helpers/integration');
+const {
+  hashLiteral,
+  readJson,
+  watch,
+  writeFile,
+} = require('../helpers/integration');
 
 const outputPath = join(__dirname, '../output/watch-mode');
 
@@ -27,10 +32,13 @@ test('outputs a manifest of one file', (t) =>
       entry: '../output/watch-mode/index.js',
       output: {
         filename: `[name].${hashLiteral}.js`,
-        path: outputPath
+        path: outputPath,
       },
-      plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
-      watch: true
+      plugins: [
+        new WebpackManifestPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+      ],
+      watch: true,
     };
 
     compiler = watch(config, t, (stats) => {

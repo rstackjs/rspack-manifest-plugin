@@ -1,8 +1,8 @@
 import { relative, resolve } from 'node:path';
 import { SyncHook } from '@rspack/lite-tapable';
 import type { Compiler, RspackPluginInstance, Compilation } from '@rspack/core';
-import { FileDescriptor } from './helpers';
-import { beforeRunHook, emitHook, getCompilerHooks } from './hooks';
+import type { FileDescriptor } from './helpers.ts';
+import { beforeRunHook, emitHook, getCompilerHooks } from './hooks.ts';
 
 const emitCountMap: EmitCountMap = new Map();
 
@@ -20,7 +20,7 @@ export interface InternalOptions {
     seed: Record<any, any>,
     files: FileDescriptor[],
     entries: Record<string, string[]>,
-    context: { compilation: Compilation }
+    context: { compilation: Compilation },
   ) => Manifest;
   map: (file: FileDescriptor) => FileDescriptor;
   publicPath: string;
@@ -54,7 +54,7 @@ const defaults = {
   transformExtensions: /^(gz|map)$/i,
   useEntryKeys: false,
   useLegacyEmit: false,
-  writeToFileEmit: false
+  writeToFileEmit: false,
 };
 
 export type EmitCountMap = Map<any, any>;
@@ -72,21 +72,30 @@ class WebpackManifestPlugin implements RspackPluginInstance {
   apply(compiler: Compiler) {
     // const { NormalModule } = compiler.webpack;
     const moduleAssets = {};
-    const manifestFileName = resolve(compiler.options.output?.path || './', this.options.fileName);
-    const manifestAssetId = relative(compiler.options.output?.path || './', manifestFileName);
-    const beforeRun = beforeRunHook.bind(this, { emitCountMap, manifestFileName });
+    const manifestFileName = resolve(
+      compiler.options.output?.path || './',
+      this.options.fileName,
+    );
+    const manifestAssetId = relative(
+      compiler.options.output?.path || './',
+      manifestFileName,
+    );
+    const beforeRun = beforeRunHook.bind(this, {
+      emitCountMap,
+      manifestFileName,
+    });
     const emit = emitHook.bind(this, {
       compiler,
       emitCountMap,
       manifestAssetId,
       manifestFileName,
       moduleAssets,
-      options: this.options
+      options: this.options,
     });
     // const normalModuleLoader = normalModuleLoaderHook.bind(this, { moduleAssets });
     const hookOptions = {
       name: 'WebpackManifestPlugin',
-      stage: this.options.assetHookStage
+      stage: this.options.assetHookStage,
     };
 
     // TODO: Rspack does not supports `compilation.hooks.normalModuleLoader` yet
@@ -101,8 +110,9 @@ class WebpackManifestPlugin implements RspackPluginInstance {
       compiler.hooks.emit.tap(hookOptions, emit);
     } else {
       compiler.hooks.thisCompilation.tap(hookOptions, (compilation) => {
-        (compilation.hooks as unknown as Webpack5Hooks).processAssets.tap(hookOptions, () =>
-          emit(compilation)
+        (compilation.hooks as unknown as Webpack5Hooks).processAssets.tap(
+          hookOptions,
+          () => emit(compilation),
         );
       });
     }
