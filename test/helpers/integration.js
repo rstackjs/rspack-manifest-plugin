@@ -9,11 +9,11 @@ const { log } = console;
 const applyDefaults = (webpackOpts) => {
   const defaults = {
     optimization: {
-      chunkIds: 'natural'
+      chunkIds: 'natural',
     },
     output: {
-      publicPath: ''
-    }
+      publicPath: '',
+    },
   };
   return merge(defaults, webpackOpts);
 };
@@ -56,14 +56,14 @@ const watch = (config, t, cb) => {
   return compiler.watch(
     {
       aggregateTimeout: 300,
-      poll: true
+      poll: true,
     },
     (err, stats) => {
       t.falsy(err);
       t.is(stats.hasErrors(), false);
 
       cb(stats);
-    }
+    },
   );
 };
 

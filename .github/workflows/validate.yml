@@ -53,7 +53,7 @@ jobs:
         run: pnpm --recursive build
 
       - name: Lint Repo
-        run: pnpm run lint
+        run: pnpm run check
 
       - name: Run Tests
         run: pnpm ci:coverage

@@ -15,8 +15,8 @@ test('should generate custom manifest', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'custom')
-    }
+      path: join(outputPath, 'custom'),
+    },
   };
 
   const { manifest, stats } = await compile(config, t, {
@@ -24,18 +24,18 @@ test('should generate custom manifest', async (t) => {
       return files.reduce((man, file) => {
         man[file.name] = {
           file: file.path,
-          hash: file.chunk.hash
+          hash: file.chunk.hash,
         };
         return man;
       }, seed);
-    }
+    },
   });
 
   t.deepEqual(manifest, {
     'main.js': {
       file: 'main.js',
-      hash: Array.from(stats.compilation.chunks)[0].hash
-    }
+      hash: Array.from(stats.compilation.chunks)[0].hash,
+    },
   });
 });
 
@@ -45,8 +45,8 @@ test('should default to `seed`', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'default-seed')
-    }
+      path: join(outputPath, 'default-seed'),
+    },
   };
 
   const { manifest } = await compile(config, t, {
@@ -55,12 +55,12 @@ test('should default to `seed`', async (t) => {
       return seed;
     },
     seed: {
-      key: 'value'
-    }
+      key: 'value',
+    },
   });
 
   t.deepEqual(manifest, {
-    key: 'value'
+    key: 'value',
   });
 });
 
@@ -70,8 +70,8 @@ test('should output an array', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'array')
-    }
+      path: join(outputPath, 'array'),
+    },
   };
 
   const { manifest } = await compile(config, t, {
@@ -80,19 +80,19 @@ test('should output an array', async (t) => {
         files.map((file) => {
           return {
             file: file.path,
-            name: file.name
+            name: file.name,
           };
-        })
+        }),
       );
     },
-    seed: []
+    seed: [],
   });
 
   t.deepEqual(manifest, [
     {
       file: 'main.js',
-      name: 'main.js'
-    }
+      name: 'main.js',
+    },
   ]);
 });
 
@@ -101,32 +101,32 @@ test('should generate manifest with "entrypoints" key', async (t) => {
     context: __dirname,
     entry: {
       one: '../fixtures/file.js',
-      two: '../fixtures/file-two.js'
+      two: '../fixtures/file-two.js',
     },
-    output: { path: join(outputPath, 'entrypoints-key') }
+    output: { path: join(outputPath, 'entrypoints-key') },
   };
 
   const { manifest } = await compile(config, t, {
     generate: (seed, files, entrypoints) => {
       const manifestFiles = files.reduce(
         (man, { name, path }) => Object.assign(man, { [name]: path }),
-        seed
+        seed,
       );
       return {
         entrypoints,
-        files: manifestFiles
+        files: manifestFiles,
       };
-    }
+    },
   });
 
   t.deepEqual(manifest, {
     entrypoints: {
       one: ['one.js'],
-      two: ['two.js']
+      two: ['two.js'],
     },
     files: {
       'one.js': 'one.js',
-      'two.js': 'two.js'
-    }
+      'two.js': 'two.js',
+    },
   });
 });

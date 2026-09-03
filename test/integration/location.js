@@ -20,9 +20,9 @@ test('output to the correct location', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: outputPath
+      path: outputPath,
     },
-    plugins: [new WebpackManifestPlugin({ fileName: 'webpack.manifest.json' })]
+    plugins: [new WebpackManifestPlugin({ fileName: 'webpack.manifest.json' })],
   };
 
   await compile(config, {}, t);
@@ -39,9 +39,13 @@ test('output using absolute path', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: absOutputPath
+      path: absOutputPath,
     },
-    plugins: [new WebpackManifestPlugin({ fileName: join(absOutputPath, 'webpack.manifest.json') })]
+    plugins: [
+      new WebpackManifestPlugin({
+        fileName: join(absOutputPath, 'webpack.manifest.json'),
+      }),
+    ],
   };
   await compile(config, {}, t);
 

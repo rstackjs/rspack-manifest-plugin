@@ -17,9 +17,9 @@ test.serial('outputs a manifest of one file', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: outputPath
+      path: outputPath,
     },
-    plugins: [new WebpackManifestPlugin()]
+    plugins: [new WebpackManifestPlugin()],
   };
 
   await compile(config, {}, t);
@@ -29,33 +29,36 @@ test.serial('outputs a manifest of one file', async (t) => {
   t.deepEqual(manifest, { 'main.js': 'main.js' });
 });
 
-test.serial('still works when there are multiple instances of the plugin', async (t) => {
-  const config = {
-    context: __dirname,
-    entry: '../fixtures/file.js',
-    output: {
-      filename: '[name].js',
-      path: outputPath
-    },
-    plugins: [
-      new WebpackManifestPlugin({ fileName: 'manifest1.json' }),
-      new WebpackManifestPlugin({ fileName: 'manifest2.json' })
-    ]
-  };
+test.serial(
+  'still works when there are multiple instances of the plugin',
+  async (t) => {
+    const config = {
+      context: __dirname,
+      entry: '../fixtures/file.js',
+      output: {
+        filename: '[name].js',
+        path: outputPath,
+      },
+      plugins: [
+        new WebpackManifestPlugin({ fileName: 'manifest1.json' }),
+        new WebpackManifestPlugin({ fileName: 'manifest2.json' }),
+      ],
+    };
 
-  const stats = await compile(config, {}, t);
-  t.is(getAsset(stats.compilation, 'main.js'), true);
-  t.is(getAsset(stats.compilation, 'manifest1.json'), true);
-  t.is(getAsset(stats.compilation, 'manifest2.json'), true);
+    const stats = await compile(config, {}, t);
+    t.is(getAsset(stats.compilation, 'main.js'), true);
+    t.is(getAsset(stats.compilation, 'manifest1.json'), true);
+    t.is(getAsset(stats.compilation, 'manifest2.json'), true);
 
-  const manifest1 = readJson(join(outputPath, 'manifest1.json'));
-  t.truthy(manifest1);
-  t.deepEqual(manifest1, { 'main.js': 'main.js' });
+    const manifest1 = readJson(join(outputPath, 'manifest1.json'));
+    t.truthy(manifest1);
+    t.deepEqual(manifest1, { 'main.js': 'main.js' });
 
-  const manifest2 = readJson(join(outputPath, 'manifest2.json'));
-  t.truthy(manifest2);
-  t.deepEqual(manifest2, { 'main.js': 'main.js' });
-});
+    const manifest2 = readJson(join(outputPath, 'manifest2.json'));
+    t.truthy(manifest2);
+    t.deepEqual(manifest2, { 'main.js': 'main.js' });
+  },
+);
 
 test('exposes a plugin hook with the manifest content', async (t) => {
   class TestPlugin {
@@ -71,10 +74,13 @@ test('exposes a plugin hook with the manifest content', async (t) => {
         });
       } else {
         compiler.plugin('compilation', (compilation) => {
-          compilation.plugin('webpack-manifest-plugin-after-emit', (manifest, callback) => {
-            this.manifest = manifest;
-            callback();
-          });
+          compilation.plugin(
+            'webpack-manifest-plugin-after-emit',
+            (manifest, callback) => {
+              this.manifest = manifest;
+              callback();
+            },
+          );
         });
       }
     }
@@ -86,9 +92,9 @@ test('exposes a plugin hook with the manifest content', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: outputPath
+      path: outputPath,
     },
-    plugins: [new WebpackManifestPlugin(), testPlugin]
+    plugins: [new WebpackManifestPlugin(), testPlugin],
   };
 
   await compile(config, {}, t);

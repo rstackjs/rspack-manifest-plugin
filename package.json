@@ -2,46 +2,62 @@
   "name": "rspack-manifest-plugin",
   "version": "5.2.2",
   "description": "A Rspack Plugin for generating Asset Manifests",
-  "license": "MIT",
-  "repository": "rstackjs/rspack-manifest-plugin",
-  "author": "Dane Thurber <dane.thurber@gmail.com>",
   "homepage": "https://github.com/rstackjs/rspack-manifest-plugin",
   "bugs": "https://github.com/rstackjs/rspack-manifest-plugin/issues",
+  "repository": "rstackjs/rspack-manifest-plugin",
+  "license": "MIT",
+  "author": "Dane Thurber <dane.thurber@gmail.com>",
+  "maintainers": [
+    "Andrew Powell <andrew@shellscape.org>"
+  ],
   "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "ci:coverage": "nyc pnpm ci:test && nyc report --reporter=text-lcov > coverage.lcov",
-    "ci:lint": "pnpm lint && pnpm security",
-    "ci:test": "pnpm test -- --verbose",
-    "lint": "rslint",
-    "prepublishOnly": "pnpm lint && pnpm build",
-    "pretest": "pnpm install && pnpm build",
-    "security": "pnpm audit --audit-level=high --prod",
-    "test": "ava --timeout=2m",
-    "bump": "npx bumpp",
-    "lint:write": "rslint --fix"
-  },
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
-  "peerDependencies": {
-    "@rspack/core": "^1.0.0 || ^2.0.0"
+  "scripts": {
+    "build": "rs lib",
+    "bump": "pnpx bumpp",
+    "check": "rs check",
+    "ci:coverage": "nyc pnpm ci:test && nyc report --reporter=text-lcov > coverage.lcov",
+    "ci:lint": "pnpm check && pnpm security",
+    "ci:test": "pnpm test -- --verbose",
+    "dev": "rs lib -w",
+    "format": "rs fmt",
+    "lint": "rs lint",
+    "prepare": "rs hooks",
+    "prepublishOnly": "pnpm check && pnpm build",
+    "security": "pnpm audit --audit-level=high --prod",
+    "pretest": "pnpm install && pnpm build",
+    "test": "ava --timeout=2m"
   },
-  "peerDependenciesMeta": {
-    "@rspack/core": {
-      "optional": true
-    }
+  "ava": {
+    "files": [
+      "!**/fixtures/**",
+      "!**/helpers/**",
+      "!**/output/**"
+    ]
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageDirectory": "./coverage/",
+    "testEnvironment": "node"
+  },
+  "nyc": {
+    "exclude": [
+      "test/"
+    ],
+    "include": [
+      "src/*.ts"
+    ]
   },
   "dependencies": {
     "@rspack/lite-tapable": "^1.0.1"
   },
   "devDependencies": {
     "@ava/babel": "^1.0.1",
-    "@commitlint/cli": "^13.1.0",
-    "@commitlint/config-conventional": "^13.1.0",
-    "@rslint/core": "^0.8.2",
     "@rspack/core": "^1.0.14",
     "@svgr/webpack": "^5.4.0",
     "@types/node": "^16.4.3",
@@ -54,9 +70,8 @@
     "file-loader": "^6.2.0",
     "memory-fs": "^0.4.1",
     "nyc": "^15.1.0",
-    "prettier": "^2.1.2",
-    "prettier-plugin-package": "^1.2.0",
     "react": "^16.3.2",
+    "rstack": "^0.7.2",
     "style-loader": "^0.23.0",
     "ts-node": "^10.1.0",
     "tslib": "^2.3.0",
@@ -64,28 +79,13 @@
     "webpack": "^5.75.0",
     "webpack-merge": "^5.8.0"
   },
-  "ava": {
-    "files": [
-      "!**/fixtures/**",
-      "!**/helpers/**",
-      "!**/output/**"
-    ]
+  "peerDependencies": {
+    "@rspack/core": "^1.0.0 || ^2.0.0"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "coverageDirectory": "./coverage/",
-    "collectCoverage": true
-  },
-  "maintainers": [
-    "Andrew Powell <andrew@shellscape.org>"
-  ],
-  "nyc": {
-    "include": [
-      "src/*.ts"
-    ],
-    "exclude": [
-      "test/"
-    ]
+  "peerDependenciesMeta": {
+    "@rspack/core": {
+      "optional": true
+    }
   },
   "packageManager": "pnpm@11.3.0"
 }

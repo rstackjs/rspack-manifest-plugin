@@ -13,24 +13,24 @@ test('does not prefix seed attributes with basePath', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'seed-no-prefix'),
-      publicPath: '/app/'
-    }
+      publicPath: '/app/',
+    },
   };
   const { manifest, stats } = await compile(config, t, {
     basePath: '/app/',
     seed: {
-      test1: 'test2'
-    }
+      test1: 'test2',
+    },
   });
 
   t.deepEqual(manifest, {
     '/app/one.js': `/app/one.${stats.hash}.js`,
-    test1: 'test2'
+    test1: 'test2',
   });
 });
 
@@ -38,19 +38,19 @@ test('prefixes definitions with a base path', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
-      path: join(outputPath, 'definition-prefix')
-    }
+      path: join(outputPath, 'definition-prefix'),
+    },
   };
   const { manifest, stats } = await compile(config, t, {
-    basePath: '/app/'
+    basePath: '/app/',
   });
 
   t.deepEqual(manifest, {
-    '/app/one.js': `one.${stats.hash}.js`
+    '/app/one.js': `one.${stats.hash}.js`,
   });
 });
 
@@ -58,17 +58,17 @@ test('prefixes paths with a public path', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'public-prefix'),
-      publicPath: '/app/'
-    }
+      publicPath: '/app/',
+    },
   };
   const { manifest, stats } = await compile(config, t);
   t.deepEqual(manifest, {
-    'one.js': `/app/one.${stats.hash}.js`
+    'one.js': `/app/one.${stats.hash}.js`,
   });
 });
 
@@ -76,19 +76,19 @@ test("does not prefix paths when webpack's publicPath is 'auto'", async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'public-auto'),
       // Webpack will resolve the publicPath at runtime; the manifest should not contain 'auto'.
-      publicPath: 'auto'
-    }
+      publicPath: 'auto',
+    },
   };
   const { manifest, stats } = await compile(config, t);
 
   t.deepEqual(manifest, {
-    'one.js': `one.${stats.hash}.js`
+    'one.js': `one.${stats.hash}.js`,
   });
 });
 
@@ -96,21 +96,21 @@ test("prefixes definitions with a base path when webpack's publicPath is 'auto'"
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'public-auto-with-basePath'),
-      publicPath: 'auto'
-    }
+      publicPath: 'auto',
+    },
   };
 
   const { manifest, stats } = await compile(config, t, {
-    basePath: '/app/'
+    basePath: '/app/',
   });
 
   t.deepEqual(manifest, {
-    '/app/one.js': `one.${stats.hash}.js`
+    '/app/one.js': `one.${stats.hash}.js`,
   });
 });
 
@@ -118,21 +118,21 @@ test("uses plugin 'publicPath' override when webpack's publicPath is 'auto'", as
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'public-auto-with-override'),
-      publicPath: 'auto'
-    }
+      publicPath: 'auto',
+    },
   };
 
   const { manifest, stats } = await compile(config, t, {
-    publicPath: '/cdn/'
+    publicPath: '/cdn/',
   });
 
   t.deepEqual(manifest, {
-    'one.js': `/cdn/one.${stats.hash}.js`
+    'one.js': `/cdn/one.${stats.hash}.js`,
   });
 });
 
@@ -140,18 +140,18 @@ test(`prefixes paths with a public path and handle ${hashLiteral} from public pa
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
       path: join(outputPath, 'public-hash'),
-      publicPath: `/${hashLiteral}/app/`
-    }
+      publicPath: `/${hashLiteral}/app/`,
+    },
   };
   const { manifest, stats } = await compile(config, t);
 
   t.deepEqual(manifest, {
-    'one.js': `/${stats.hash}/app/one.js`
+    'one.js': `/${stats.hash}/app/one.js`,
   });
 });
 
@@ -159,20 +159,20 @@ test('is possible to override publicPath', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'public-override'),
-      publicPath: '/app/'
-    }
+      publicPath: '/app/',
+    },
   };
   const { manifest, stats } = await compile(config, t, {
-    publicPath: ''
+    publicPath: '',
   });
 
   t.deepEqual(manifest, {
-    'one.js': `one.${stats.hash}.js`
+    'one.js': `one.${stats.hash}.js`,
   });
 });
 
@@ -180,20 +180,20 @@ test('prefixes definitions with a base path when public path is also provided', 
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'prefix-base'),
-      publicPath: '/app/'
-    }
+      publicPath: '/app/',
+    },
   };
   const { manifest, stats } = await compile(config, t, {
-    basePath: '/app/'
+    basePath: '/app/',
   });
 
   t.deepEqual(manifest, {
-    '/app/one.js': `/app/one.${stats.hash}.js`
+    '/app/one.js': `/app/one.${stats.hash}.js`,
   });
 });
 
@@ -201,19 +201,19 @@ test('should keep full urls provided by basePath', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'base-urls')
-    }
+      path: join(outputPath, 'base-urls'),
+    },
   };
   const { manifest } = await compile(config, t, {
-    basePath: 'https://www/example.com/'
+    basePath: 'https://www/example.com/',
   });
 
   t.deepEqual(manifest, {
-    'https://www/example.com/one.js': 'one.js'
+    'https://www/example.com/one.js': 'one.js',
   });
 });
 
@@ -221,18 +221,18 @@ test('should keep full urls provided by publicPath', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
       path: join(outputPath, 'full-urls'),
-      publicPath: 'http://www/example.com/'
-    }
+      publicPath: 'http://www/example.com/',
+    },
   };
   const { manifest } = await compile(config, t);
 
   t.deepEqual(manifest, {
-    'one.js': 'http://www/example.com/one.js'
+    'one.js': 'http://www/example.com/one.js',
   });
 });
 
@@ -248,19 +248,19 @@ test('ensures the manifest is mapping paths to names', async (t) => {
             {
               loader: 'file-loader',
               options: {
-                name: 'outputfile.[ext]'
-              }
-            }
-          ]
-        }
-      ]
+                name: 'outputfile.[ext]',
+              },
+            },
+          ],
+        },
+      ],
     },
-    output: { path: join(outputPath, 'map-path-name') }
+    output: { path: join(outputPath, 'map-path-name') },
   };
   const { manifest } = await compile(config, t);
   const expected = {
     'file.txt': 'outputfile.txt',
-    'main.js': 'main.js'
+    'main.js': 'main.js',
   };
 
   t.truthy(manifest);
@@ -272,15 +272,15 @@ test('should output unix paths', async (t) => {
     context: __dirname,
     entry: {
       'dir\\main': '../fixtures/file.js',
-      'some\\dir\\main': '../fixtures/file.js'
+      'some\\dir\\main': '../fixtures/file.js',
     },
-    output: { path: join(outputPath, 'unix') }
+    output: { path: join(outputPath, 'unix') },
   };
   const { manifest } = await compile(config, t);
 
   t.truthy(manifest);
   t.deepEqual(manifest, {
     'dir/main.js': 'dir/main.js',
-    'some/dir/main.js': 'some/dir/main.js'
+    'some/dir/main.js': 'some/dir/main.js',
   });
 });

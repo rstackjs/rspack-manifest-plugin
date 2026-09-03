@@ -19,16 +19,16 @@ test('removeKeyHash', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[contenthash].removeKeyHash.js',
-      path: join(outputPath, 'removeKeyHash')
+      path: join(outputPath, 'removeKeyHash'),
     },
     plugins: [
       new CopyPlugin({
         patterns: [
           { from: '../fixtures/*.css', to: '[name].[contenthash].[ext]' },
-          { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' }
-        ]
-      })
-    ]
+          { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' },
+        ],
+      }),
+    ],
   };
 
   let { manifest } = await compile(config, t);
@@ -57,16 +57,16 @@ test('removeKeyHash, custom hash length', async (t) => {
     output: {
       filename: '[contenthash].removeKeyHash.js',
       hashDigestLength: 16,
-      path: join(outputPath, 'removeKeyHashCustomLength')
+      path: join(outputPath, 'removeKeyHashCustomLength'),
     },
     plugins: [
       new CopyPlugin({
         patterns: [
           { from: '../fixtures/*.css', to: '[name].[contenthash].[ext]' },
-          { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' }
-        ]
-      })
-    ]
+          { from: '../fixtures/*.txt', to: '[contenthash].[name].[ext]' },
+        ],
+      }),
+    ],
   };
 
   let { manifest } = await compile(config, t);
@@ -92,12 +92,12 @@ test('useEntryKeys', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      main: '../fixtures/file.js'
+      main: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'useEntryKeys')
-    }
+      path: join(outputPath, 'useEntryKeys'),
+    },
   };
   const { manifest } = await compile(config, t, { useEntryKeys: true });
 
@@ -109,12 +109,12 @@ test('useEntryKeys, exclude sourcemap', async (t) => {
     context: __dirname,
     devtool: 'source-map',
     entry: {
-      main: '../fixtures/file.js'
+      main: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'useEntryKeys-exclude')
-    }
+      path: join(outputPath, 'useEntryKeys-exclude'),
+    },
   };
   const { manifest } = await compile(config, t, { useEntryKeys: true });
 
@@ -125,17 +125,17 @@ test('useLegacyEmit', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      main: '../fixtures/file.js'
+      main: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'useLegacyEmit')
+      path: join(outputPath, 'useLegacyEmit'),
     },
     plugins: [
       new DependencyExtractionWebpackPlugin({
-        outputFormat: 'json'
-      })
-    ]
+        outputFormat: 'json',
+      }),
+    ],
   };
   const { manifest } = await compile(config, t, { useLegacyEmit: true });
 
@@ -158,7 +158,7 @@ test('assetHookStage', async (t) => {
       const hookOptions = {
         name: 'LastStagePlugin',
         // Make sure our plugin is scheduled to run after the manifest plugin
-        stage: SECOND_PROCESS_ASSETS_STAGE
+        stage: SECOND_PROCESS_ASSETS_STAGE,
       };
 
       compiler.hooks.thisCompilation.tap(hookOptions, (compilation) => {
@@ -171,17 +171,19 @@ test('assetHookStage', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      main: '../fixtures/file.js'
+      main: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'assetHookStage')
+      path: join(outputPath, 'assetHookStage'),
     },
-    plugins: [new LastStagePlugin()]
+    plugins: [new LastStagePlugin()],
   };
 
   // Ensure we register the manifest plugin to run first.
-  const { manifest } = await compile(config, t, { assetHookStage: FIRST_PROCESS_ASSETS_STAGE });
+  const { manifest } = await compile(config, t, {
+    assetHookStage: FIRST_PROCESS_ASSETS_STAGE,
+  });
 
   t.snapshot(manifest);
   const laterPluginHasManifest = assets.includes('manifest.json');

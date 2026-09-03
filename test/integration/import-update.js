@@ -14,7 +14,10 @@ let isFirstRun;
 test.before(() => {
   writeFile(join(outputPath, 'chunk1.js'), "console.log('chunk 1')");
   writeFile(join(outputPath, 'chunk2.js'), "console.log('chunk 2')");
-  writeFile(join(outputPath, 'index.js'), "import('./chunk1')\nimport('./chunk2')");
+  writeFile(
+    join(outputPath, 'index.js'),
+    "import('./chunk1')\nimport('./chunk2')",
+  );
   isFirstRun = true;
 });
 
@@ -29,10 +32,13 @@ test('outputs a manifest of one file', (t) =>
       entry: '../output/watch-import-chunk/index.js',
       output: {
         filename: '[name].js',
-        path: outputPath
+        path: outputPath,
       },
-      plugins: [new WebpackManifestPlugin(), new webpack.HotModuleReplacementPlugin()],
-      watch: true
+      plugins: [
+        new WebpackManifestPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+      ],
+      watch: true,
     };
 
     compiler = watch(config, t, () => {
@@ -42,7 +48,11 @@ test('outputs a manifest of one file', (t) =>
 
       if (isFirstRun) {
         // eslint-disable-next-line sort-keys
-        t.deepEqual(manifest, { 'main.js': 'main.js', '1.js': '1.js', '2.js': '2.js' });
+        t.deepEqual(manifest, {
+          'main.js': 'main.js',
+          '1.js': '1.js',
+          '2.js': '2.js',
+        });
         isFirstRun = false;
         writeFile(join(outputPath, 'index.js'), "import('./chunk1')");
       } else {

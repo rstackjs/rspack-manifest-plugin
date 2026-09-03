@@ -13,18 +13,18 @@ test('filter non-initial chunks', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      nameless: '../fixtures/nameless.js'
+      nameless: '../fixtures/nameless.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
-      path: join(outputPath, 'filter-chunks')
-    }
+      path: join(outputPath, 'filter-chunks'),
+    },
   };
 
   const { manifest, stats } = await compile(config, t, {
     filter(file) {
       return file.isInitial;
-    }
+    },
   });
 
   t.is(Object.keys(manifest).length, 1);
@@ -37,18 +37,18 @@ test('map file details', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'map-files')
-    }
+      path: join(outputPath, 'map-files'),
+    },
   };
   const { manifest } = await compile(config, t, {
     map(file, i) {
       file.name = i.toString();
       return file;
-    }
+    },
   });
 
   t.deepEqual(manifest, {
-    0: 'main.js'
+    0: 'main.js',
   });
 });
 
@@ -58,19 +58,19 @@ test('map subfolders', async (t) => {
     entry: '../fixtures/file.js',
     output: {
       filename: 'javascripts/main.js',
-      path: join(outputPath, 'map-subfolders')
-    }
+      path: join(outputPath, 'map-subfolders'),
+    },
   };
 
   const { manifest } = await compile(config, t, {
     map(file) {
       file.name = join(dirname(file.path), file.name);
       return file;
-    }
+    },
   });
 
   t.deepEqual(manifest, {
-    'javascripts/main.js': 'javascripts/main.js'
+    'javascripts/main.js': 'javascripts/main.js',
   });
 });
 
@@ -79,12 +79,12 @@ test('sort', async (t) => {
     context: __dirname,
     entry: {
       one: '../fixtures/file.js',
-      two: '../fixtures/file-two.js'
+      two: '../fixtures/file-two.js',
     },
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'sort')
-    }
+      path: join(outputPath, 'sort'),
+    },
   };
   const { manifest } = await compile(config, t, {
     generate(seed, files) {
@@ -94,7 +94,7 @@ test('sort', async (t) => {
     sort(a) {
       // make sure one is the latest
       return a.name === 'one.js' ? 1 : -1;
-    }
+    },
   });
 
   t.deepEqual(manifest, ['two.js', 'one.js']);

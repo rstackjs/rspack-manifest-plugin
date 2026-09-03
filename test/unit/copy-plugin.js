@@ -15,15 +15,15 @@ test('works when including copied assets', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: { path: join(outputPath, 'copied-assets') },
-    plugins: [new MockCopyPlugin(), new WebpackManifestPlugin()]
+    plugins: [new MockCopyPlugin(), new WebpackManifestPlugin()],
   };
   const { manifest } = await compile(config, t);
   t.deepEqual(manifest, {
     'one.js': 'one.js',
-    'third.party.js': 'third.party.js'
+    'third.party.js': 'third.party.js',
   });
 });
 
@@ -31,24 +31,24 @@ test(`doesn't add duplicates when prefixes definitions with a base path`, async 
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
       path: join(outputPath, 'prefix-duplicates'),
-      publicPath: '/app/'
+      publicPath: '/app/',
     },
     plugins: [
       new MockCopyPlugin(),
       new WebpackManifestPlugin({
-        basePath: '/app/'
-      })
-    ]
+        basePath: '/app/',
+      }),
+    ],
   };
   const { manifest, stats } = await compile(config, t);
   t.deepEqual(manifest, {
     '/app/one.js': `/app/one.${stats.hash}.js`,
-    '/app/third.party.js': '/app/third.party.js'
+    '/app/third.party.js': '/app/third.party.js',
   });
 });
 
@@ -56,18 +56,18 @@ test(`doesn't add duplicates when used with hashes in the filename`, async (t) =
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
-      path: join(outputPath, 'hash-dupes')
+      path: join(outputPath, 'hash-dupes'),
     },
-    plugins: [new MockCopyPlugin(), new WebpackManifestPlugin()]
+    plugins: [new MockCopyPlugin(), new WebpackManifestPlugin()],
   };
   const { manifest, stats } = await compile(config, t);
   t.deepEqual(manifest, {
     'one.js': `one.${stats.hash}.js`,
-    'third.party.js': 'third.party.js'
+    'third.party.js': 'third.party.js',
   });
 });
 
@@ -75,7 +75,7 @@ test('supports custom serializer using serialize option', async (t) => {
   const config = {
     context: __dirname,
     entry: '../fixtures/file.js',
-    output: { path: join(outputPath, 'serialize') }
+    output: { path: join(outputPath, 'serialize') },
   };
 
   const { manifest } = await compile(config, t, {
@@ -87,7 +87,7 @@ test('supports custom serializer using serialize option', async (t) => {
         output += `- ${key}: '${man[key]}'\n`;
       }
       return output;
-    }
+    },
   });
 
   t.snapshot(manifest);

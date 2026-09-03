@@ -24,7 +24,7 @@ test('outputs a manifest of one file', async (t) => {
   const config = {
     context: __dirname,
     entry: '../fixtures/file.js',
-    output: { path: join(outputPath, 'one-file') }
+    output: { path: join(outputPath, 'one-file') },
   };
   const { manifest } = await compile(config, t);
 
@@ -37,16 +37,16 @@ test('outputs a manifest of multiple files', async (t) => {
     context: __dirname,
     entry: {
       one: '../fixtures/file.js',
-      two: '../fixtures/file-two.js'
+      two: '../fixtures/file-two.js',
     },
-    output: { path: join(outputPath, 'multiple-files') }
+    output: { path: join(outputPath, 'multiple-files') },
   };
   const { manifest } = await compile(config, t);
 
   t.truthy(manifest);
   t.deepEqual(manifest, {
     'one.js': 'one.js',
-    'two.js': 'two.js'
+    'two.js': 'two.js',
   });
 });
 
@@ -54,12 +54,12 @@ test('works with hashes in the filename', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: `[name].${hashLiteral}.js`,
-      path: join(outputPath, 'hashes')
-    }
+      path: join(outputPath, 'hashes'),
+    },
   };
   const { manifest, stats } = await compile(config, t);
 
@@ -71,18 +71,18 @@ test('works with source maps', async (t) => {
     context: __dirname,
     devtool: 'source-map',
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: 'build/[name].js',
-      path: join(outputPath, 'source-maps')
-    }
+      path: join(outputPath, 'source-maps'),
+    },
   };
   const { manifest } = await compile(config, t);
 
   t.deepEqual(manifest, {
     'one.js': 'build/one.js',
-    'one.js.map': 'build/one.js.map'
+    'one.js.map': 'build/one.js.map',
   });
 });
 
@@ -90,18 +90,18 @@ test('adds seed object custom attributes when provided', async (t) => {
   const config = {
     context: __dirname,
     entry: {
-      one: '../fixtures/file.js'
+      one: '../fixtures/file.js',
     },
     output: {
       filename: '[name].js',
-      path: join(outputPath, 'custom-attributes')
-    }
+      path: join(outputPath, 'custom-attributes'),
+    },
   };
   const { manifest } = await compile(config, t, { seed: { test1: 'test2' } });
 
   t.deepEqual(manifest, {
     'one.js': 'one.js',
-    test1: 'test2'
+    test1: 'test2',
   });
 });
 
@@ -110,23 +110,23 @@ test('combines manifests of multiple compilations', async (t) => {
     {
       context: __dirname,
       entry: {
-        one: '../fixtures/file.js'
+        one: '../fixtures/file.js',
       },
-      output: { path: join(outputPath, 'multiple-compilations') }
+      output: { path: join(outputPath, 'multiple-compilations') },
     },
     {
       context: __dirname,
       entry: {
-        two: '../fixtures/file-two.js'
+        two: '../fixtures/file-two.js',
       },
-      output: { path: join(outputPath, 'multiple-compilations') }
-    }
+      output: { path: join(outputPath, 'multiple-compilations') },
+    },
   ];
   const { manifest } = await compile(config, t, { seed: {} });
 
   t.deepEqual(manifest, {
     'one.js': 'one.js',
-    'two.js': 'two.js'
+    'two.js': 'two.js',
   });
 });
 
@@ -142,20 +142,20 @@ test('outputs a manifest of no-js file', async (t) => {
             {
               loader: 'file-loader',
               options: {
-                name: '[name].[ext]'
-              }
-            }
-          ]
-        }
-      ]
+                name: '[name].[ext]',
+              },
+            },
+          ],
+        },
+      ],
     },
-    output: { path: join(outputPath, 'no-js') }
+    output: { path: join(outputPath, 'no-js') },
   };
   const { manifest } = await compile(config, t);
   const expected = {
     'main.js': 'main.js',
     // eslint-disable-next-line sort-keys
-    'file.txt': 'file.txt'
+    'file.txt': 'file.txt',
   };
 
   t.truthy(manifest);
@@ -166,7 +166,7 @@ test('make manifest available to other webpack plugins', async (t) => {
   const config = {
     context: __dirname,
     entry: '../fixtures/file.js',
-    output: { path: join(outputPath, 'other-plugins') }
+    output: { path: join(outputPath, 'other-plugins') },
   };
   const { manifest, stats } = await compile(config, t);
 
@@ -176,7 +176,7 @@ test('make manifest available to other webpack plugins', async (t) => {
 
   try {
     t.deepEqual(JSON.parse(asset.source()), {
-      'main.js': 'main.js'
+      'main.js': 'main.js',
     });
   } catch (e) {
     // webpack v5: Content and Map of this Source is not available (only size() is supported)
@@ -192,25 +192,28 @@ test('works with asset modules', async (t) => {
       rules: [
         {
           test: /\.(svg)/,
-          type: 'asset/resource'
-        }
-      ]
+          type: 'asset/resource',
+        },
+      ],
     },
     output: {
       assetModuleFilename: `images/[name].[hash:4][ext]`,
-      path: join(outputPath, 'auxiliary-assets')
-    }
+      path: join(outputPath, 'auxiliary-assets'),
+    },
   };
 
   const { manifest } = await compile(config, t);
   const expected = {
     'main.js': 'main.js',
     // eslint-disable-next-line sort-keys
-    'images/manifest.svg': `images/manifest.14ca.svg`
+    'images/manifest.svg': `images/manifest.14ca.svg`,
   };
 
   t.truthy(manifest);
   t.deepEqual(Object.keys(expected), ['main.js', 'images/manifest.svg']);
   t.deepEqual(manifest['main.js'], 'main.js');
-  t.regex(manifest['images/manifest.svg'], /images\/manifest\.[a-z|\d]{4}\.svg/);
+  t.regex(
+    manifest['images/manifest.svg'],
+    /images\/manifest\.[a-z|\d]{4}\.svg/,
+  );
 });

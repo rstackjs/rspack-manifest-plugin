@@ -1,6 +1,6 @@
 import { dirname, join, basename } from 'node:path';
 import type { AssetInfo, Chunk, Asset, Compilation } from '@rspack/core';
-import type { InternalOptions, Manifest } from './';
+import type { InternalOptions, Manifest } from './index.ts';
 
 export interface FileDescriptor {
   chunk?: Chunk;
@@ -28,37 +28,43 @@ export interface CompilationAsset extends Asset {
 const generateManifest = (
   compilation: Compilation,
   files: FileDescriptor[],
-  { generate, seed = {} }: InternalOptions
+  { generate, seed = {} }: InternalOptions,
 ) => {
   let result: Manifest;
   if (generate) {
     const entrypointsArray = Array.from(compilation.entrypoints.entries());
     const entrypoints = entrypointsArray.reduce(
-      (e, [name, entrypoint]) => Object.assign(e, { [name]: entrypoint.getFiles() }),
-      {} as Record<string, any>
+      (e, [name, entrypoint]) =>
+        Object.assign(e, { [name]: entrypoint.getFiles() }),
+      {} as Record<string, any>,
     );
     result = generate(seed, files, entrypoints, { compilation });
   } else {
     result = files.reduce(
       (manifest, file) => Object.assign(manifest, { [file.name]: file.path }),
-      seed
+      seed,
     );
   }
 
   return result;
 };
 
-const getFileType = (fileName: string, { transformExtensions }: InternalOptions) => {
+const getFileType = (
+  fileName: string,
+  { transformExtensions }: InternalOptions,
+) => {
   const replaced = fileName.replace(/\?.*/, '');
   const split = replaced.split('.');
   const extension = split.pop();
-  return transformExtensions.test(extension!) ? `${split.pop()}.${extension}` : extension;
+  return transformExtensions.test(extension!)
+    ? `${split.pop()}.${extension}`
+    : extension;
 };
 
 const reduceAssets = (
   files: FileDescriptor[],
   asset: CompilationAsset,
-  moduleAssets: Record<any, any>
+  moduleAssets: Record<any, any>,
 ) => {
   let name;
   if (moduleAssets[asset.name]) {
@@ -74,7 +80,7 @@ const reduceAssets = (
       isInitial: false,
       isModuleAsset: true,
       name,
-      path: asset.name
+      path: asset.name,
     });
   }
 
@@ -89,7 +95,7 @@ const reduceAssets = (
     isInitial: false,
     isModuleAsset: false,
     name: asset.name,
-    path: asset.name
+    path: asset.name,
   });
 };
 
@@ -97,7 +103,7 @@ const reduceChunk = (
   files: FileDescriptor[],
   chunk: Chunk,
   options: InternalOptions,
-  auxiliaryFiles: Record<any, any>
+  auxiliaryFiles: Record<any, any>,
 ) => {
   // auxiliary files contain things like images, fonts AND, most
   // importantly, other files like .map sourcemap files
@@ -111,7 +117,7 @@ const reduceChunk = (
       isInitial: false,
       isModuleAsset: true,
       name: basename(auxiliaryFile),
-      path: auxiliaryFile
+      path: auxiliaryFile,
     };
   });
 
@@ -131,7 +137,7 @@ const reduceChunk = (
       isInitial: chunk.isOnlyInitial(),
       isModuleAsset: false,
       name,
-      path
+      path,
     });
   }, files);
 };
@@ -151,10 +157,13 @@ const transformFiles = (files: FileDescriptor[], options: InternalOptions) =>
       // Note: We want to access the filter, map, and sort functions on an array. TS sucks at this
       // so we cast to something it can't complain about
       (prev, fname: string) =>
-        (prev as unknown as Record<string, (callback: unknown) => FileDescriptor[]>)[fname](
-          options[fname]
-        ),
-      files
+        (
+          prev as unknown as Record<
+            string,
+            (callback: unknown) => FileDescriptor[]
+          >
+        )[fname](options[fname]),
+      files,
     )
     .map(standardizeFilePaths);
 
