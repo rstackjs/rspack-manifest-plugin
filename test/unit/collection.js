@@ -1,10 +1,13 @@
+const { readFileSync } = require('node:fs');
+const { createRequire } = require('node:module');
 const { join } = require('node:path');
+const vm = require('node:vm');
 const test = require('ava');
 const { RawSource } = require('@rspack/core').sources;
 const { emitHook } = require('../../dist/hooks');
 const { RspackManifestPlugin } = require('../..');
 
-function collect(count, generate) {
+function collect(count, generate, emit = emitHook) {
   let output;
   const chunks = Array.from({ length: count }, (_, index) => ({
     name: index === 0 ? undefined : 'shared',
@@ -38,7 +41,7 @@ function collect(count, generate) {
       output = JSON.parse(source.source());
     },
   };
-  emitHook(
+  emit(
     {
       compiler: {
         options: { output: { path: outputPath } },
@@ -57,6 +60,53 @@ function collect(count, generate) {
   );
   return output;
 }
+
+test('collection never passes accumulated files to helpers or copies them for maps', (t) => {
+  const filename = require.resolve('../../dist/hooks');
+  const hookRequire = createRequire(filename);
+  const helpersPath = hookRequire.resolve('./helpers');
+  const helpers = hookRequire(helpersPath);
+  const calls = { reduceChunk: 0, reduceAssets: 0 };
+  const observedHelpers = { ...helpers };
+  for (const name of Object.keys(calls)) {
+    observedHelpers[name] = (files, ...args) => {
+      calls[name]++;
+      t.is(files.length, 0, `${name} must receive an empty accumulator`);
+      return helpers[name](files, ...args);
+    };
+  }
+  const module = { exports: {} };
+  const context = vm.createContext({
+    module,
+    exports: module.exports,
+    require(request) {
+      return hookRequire.resolve(request) === helpersPath
+        ? observedHelpers
+        : hookRequire(request);
+    },
+  });
+  // Count copies in this hook's realm without patching the process's arrays.
+  vm.runInContext(
+    `globalThis.copiedEntries = 0;
+     const concat = Array.prototype.concat;
+     Array.prototype.concat = function (...items) {
+       copiedEntries += this.length;
+       return concat.apply(this, items);
+     };`,
+    context,
+  );
+  vm.runInContext(readFileSync(filename, 'utf8'), context, { filename });
+
+  const count = 3;
+  const manifest = collect(count, undefined, module.exports.emitHook);
+  t.deepEqual(manifest, collect(count));
+  t.deepEqual(calls, { reduceChunk: count, reduceAssets: count * 2 + 3 });
+  // Each two-file chunk may copy one local entry, never the global list.
+  t.true(
+    context.copiedEntries <= count,
+    'auxiliary collection must not copy the accumulated files',
+  );
+});
 
 test('collection keeps chunk, asset and auxiliary ordering for callbacks', (t) => {
   const manifest = collect(3, (seed, files) => ({
