@@ -71,7 +71,7 @@
     "memory-fs": "^0.4.1",
     "nyc": "^15.1.0",
     "react": "^16.3.2",
-    "rstack": "^0.7.2",
+    "rstack": "^0.9.5",
     "style-loader": "^0.23.0",
     "ts-node": "^10.1.0",
     "tslib": "^2.3.0",
@@ -87,5 +87,5 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@11.3.0"
+  "packageManager": "pnpm@12.18.0"
 }
