@@ -98,17 +98,14 @@ const emitHook = function emit(
   emitCountMap.set(manifestFileName, emitCount);
 
   const auxiliaryFiles: Record<any, any> = {};
-  let files = Array.from(compilation.chunks).reduce<FileDescriptor[]>(
-    (prev: FileDescriptor[], chunk: any) =>
-      reduceChunk(prev, chunk, options, auxiliaryFiles),
-    [] as FileDescriptor[],
+  let files = Array.from(compilation.chunks).flatMap((chunk) =>
+    reduceChunk([], chunk, options, auxiliaryFiles),
   );
 
   // module assets don't show up in assetsByChunkName, we're getting them this way
-  files = (stats.assets! as unknown as CompilationAsset[]).reduce(
-    (prev, asset) => reduceAssets(prev, asset, moduleAssets),
-    files,
-  );
+  for (const asset of stats.assets! as unknown as CompilationAsset[]) {
+    files.push(...reduceAssets([], asset, moduleAssets));
+  }
 
   // don't add hot updates and don't add manifests from other instances
   files = files.filter(
@@ -127,7 +124,7 @@ const emitHook = function emit(
   // if there are any auxiliaryFiles left, add them to the files
   // this handles, specifically, sourcemaps
   Object.keys(auxiliaryFiles).forEach((auxiliaryFile) => {
-    files = files.concat(auxiliaryFiles[auxiliaryFile]);
+    files.push(auxiliaryFiles[auxiliaryFile]);
   });
 
   const integrityMap: Record<string, string> = {};
